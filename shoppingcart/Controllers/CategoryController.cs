@@ -1,6 +1,12 @@
-﻿namespace shoppingcart.Controllers
+﻿using Microsoft.AspNetCore.Mvc;
+
+namespace shoppingcart.Controllers
 {
-	public class CategoryController
+	public class CategoryController : Controller
 	{
+		public IActionResult Index()
+		{
+			return View();
+		}
 	}
 }
