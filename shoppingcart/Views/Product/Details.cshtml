@@ -11,7 +11,7 @@
 					<!--product-details-->
 					<div class="col-sm-5">
 						<div class="view-product">
-							<img src="/images/@Model.Image" alt="@Model.Name" />
+							<img src="/media/products/@Model.Image" alt="@Model.Name" />
 							<h3>ZOOM</h3>
 						</div>
 
@@ -51,7 +51,7 @@
 					</div>
 					<div class="tab-content">
 						<div class="tab-pane fade active in" id="details">
-							@Model.Description
+							<p>@Html.Raw(Model.Description)</p>
 						</div>
 
 						<div class="tab-pane fade" id="companyprofile">
