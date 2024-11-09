@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using shoppingcart.Models;
@@ -9,7 +10,8 @@ namespace shoppingcart.Areas.Admins.Controllers
 
 {
     [Area("Admin")]
-    public class ProductController : Controller
+	[Authorize]
+	public class ProductController : Controller
     {
         private readonly DataContext _dataContext;
         private readonly IWebHostEnvironment _webHostEnvironment;

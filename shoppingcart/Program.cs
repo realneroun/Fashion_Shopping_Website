@@ -1,4 +1,6 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using shoppingcart.Models;
 using shoppingcart.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -22,7 +24,27 @@ builder.Services.AddSession(options =>
 
 });
 
+// declare Identity
+builder.Services.AddIdentity<AppUserModel,IdentityRole>().AddEntityFrameworkStores<DataContext>().AddDefaultTokenProviders();
+
+
+builder.Services.Configure<IdentityOptions>(options =>
+{
+	// Password settings.
+	options.Password.RequireDigit = true;
+	options.Password.RequireLowercase = true;
+	options.Password.RequireNonAlphanumeric = false;
+	options.Password.RequireUppercase = false;
+	options.Password.RequiredLength = 4;
+
+	options.User.RequireUniqueEmail = true;
+});
+
+
+
 var app = builder.Build();
+
+app.UseStatusCodePagesWithRedirects("/Home/Error?statuscode={0}");
 
 app.UseSession();
 // Configure the HTTP request pipeline.
@@ -34,6 +56,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(

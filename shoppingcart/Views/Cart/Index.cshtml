@@ -63,6 +63,10 @@
 					<tr>
 						<td colspan="6">Grand Total : @Model.GrandTotal.ToString()</td
 						<td><a asp-controller="Cart" asp-action="Clear">Clear Cart</a></td>
+						@if(User.Identity?.IsAuthenticated?? false)
+						{
+							<td><a asp-controller="Checkout" asp-action="Checkout">Checkout</a></td>
+						}
 					</tr>
 				</tbody>
 			</table>
