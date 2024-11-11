@@ -9,23 +9,27 @@ using shoppingcart.Repositories;
 namespace shoppingcart.Areas.Admin.Controllers
 {
 	[Area("Admin")]
-    [Authorize]
-	public class BrandController : Controller
+    [Route("Admin/Brand")]
+    [Authorize(Roles = "Admin")]
+    public class BrandController : Controller
 	{
 		private readonly DataContext _dataContext;
 		public BrandController(DataContext context)
 		{
 			_dataContext = context;
 		}
-		public async Task<IActionResult> Index()
+        [Route("Index")]
+        public async Task<IActionResult> Index()
 		{
 
 			return View(await _dataContext.Brands.OrderByDescending(p => p.Id).ToListAsync());
 		}
+        [Route("Create")]
         public IActionResult Create()
         {
             return View("Create");
         }
+        [Route("Create")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(BrandModel objBrand)
@@ -61,6 +65,7 @@ namespace shoppingcart.Areas.Admin.Controllers
             };
             return View(objBrand);
         }
+        [Route("Edit")]
         public async Task<IActionResult> Edit(int Id)
         {
             BrandModel objBrand  = await _dataContext.Brands.FindAsync(Id);
@@ -105,6 +110,7 @@ namespace shoppingcart.Areas.Admin.Controllers
             };
             return View(objBrand);
         }
+        [Route("Delete")]
         public async Task<IActionResult> Delete(int Id)
         {
             BrandModel objBrand = await _dataContext.Brands.FindAsync(Id);

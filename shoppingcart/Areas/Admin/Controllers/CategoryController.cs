@@ -9,6 +9,7 @@ using shoppingcart.Repositories;
 namespace shoppingcart.Areas.Admin.Controllers
 {
 	[Area("Admin")]
+    [Route("Admin/Category")]
 	[Authorize]
 	public class CategoryController : Controller
 	{
@@ -17,16 +18,45 @@ namespace shoppingcart.Areas.Admin.Controllers
 		{
 			_dataContext = context;
 		}
-		public async Task<IActionResult> Index()
-		{
+		//public async Task<IActionResult> Index()
+		//{
 
-			return View(await _dataContext.Categories.OrderByDescending(p => p.Id).ToListAsync());
+		//	return View(await _dataContext.Categories.OrderByDescending(p => p.Id).ToListAsync());
+		//}
+
+		[Route("Index")]
+		public async Task<IActionResult> Index(int pg = 1)
+		{
+			List<CategoryModel> category = _dataContext.Categories.ToList(); //33 datas
+
+
+			const int pageSize = 2; //10 items/trang
+
+			if (pg < 1) //page < 1;
+			{
+				pg = 1; //page ==1
+			}
+			int recsCount = category.Count(); //33 items;
+
+			var pager = new Paginate(recsCount, pg, pageSize);
+
+			int recSkip = (pg - 1) * pageSize; //(3 - 1) * 10; 
+
+			//category.Skip(20).Take(10).ToList()
+
+			var data = category.Skip(recSkip).Take(pager.PageSize).ToList();
+
+			ViewBag.Pager = pager;
+
+			return View(data);
 		}
-        public IActionResult Create()
+		[Route("Create")]
+		public IActionResult Create()
         {
             return View("Create");
         }
-        [HttpPost]
+		[Route("Create")]
+		[HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CategoryModel objCategory)
         {
@@ -61,12 +91,14 @@ namespace shoppingcart.Areas.Admin.Controllers
             };
             return View(objCategory);
         }
-        public async Task<IActionResult> Edit(int Id)
+		[Route("Edit")]
+		public async Task<IActionResult> Edit(int Id)
         {
             CategoryModel objCategory = await _dataContext.Categories.FindAsync(Id);
             return View(objCategory);
         }
-        [HttpPost]
+		[Route("Edit")]
+		[HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int Id, CategoryModel objCategory)
         {
@@ -105,7 +137,8 @@ namespace shoppingcart.Areas.Admin.Controllers
             };
             return View(objCategory);
         }
-        public async Task<IActionResult> Delete(int Id)
+		[Route("Delete")]
+		public async Task<IActionResult> Delete(int Id)
         {
             CategoryModel objCategory = await _dataContext.Categories.FindAsync(Id);
             _dataContext.Remove(objCategory);

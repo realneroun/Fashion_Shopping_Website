@@ -13,6 +13,8 @@
 	<link href="/css/animate.css" rel="stylesheet">
 	<link href="/css/main.css" rel="stylesheet">
 	<link href="/css/responsive.css" rel="stylesheet">
+
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.14.5/dist/sweetalert2.min.css" integrity="sha256-qWVM38RAVYHA4W8TAlDdszO1hRaAq0ME7y2e9aab354=" crossorigin="anonymous">
 	<!--[if lt IE 9]>
 	<script src="js/html5shiv.js"></script>
 	<script src="js/respond.min.js"></script>
@@ -89,11 +91,14 @@
 					<div class="col-sm-8">
 						<div class="shop-menu pull-right">
 							<ul class="nav navbar-nav">
-								<li><a href="#"><i class="fa fa-user"></i> Account</a></li>
-								<li><a href="#"><i class="fa fa-star"></i> Wishlist</a></li>
-								<li><a href="checkout.html"><i class="fa fa-crosshairs"></i> Checkout</a></li>
-								<li><a href="cart.html"><i class="fa fa-shopping-cart"></i> Cart</a></li>
-								<li><a href="login.html"><i class="fa fa-lock"></i> Login</a></li>
+								@if (User.Identity?.IsAuthenticated ?? false)
+								{
+									<li><a asp-controller="Account" asp-action="Logout"><i class="fa fa-lock"></i>Hi, @User.Identity.Name ,Logout</a></li>
+								}
+								else
+								{
+									<li><a asp-controller="Account" asp-action="Login"><i class="fa fa-lock"></i> Login</a></li>
+								}
 							</ul>
 						</div>
 					</div>
@@ -122,6 +127,7 @@
 								<li><a asp-controller="Brand" asp-action="Index">Brands</a></li>
 								<li><a asp-controller="Order" asp-action="Index">Orders</a></li>
 								<li><a asp-controller="User" asp-action="Index">Users</a></li>
+								<li><a asp-controller="Role" asp-action="Index">Roles</a></li>
 							</ul>
 						</div>
 					</div>
@@ -145,6 +151,9 @@
 	<footer id="footer">
 	</footer><!--/Footer-->
 
+
+
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.14.5/dist/sweetalert2.all.min.js" integrity="sha256-1m4qVbsdcSU19tulVTbeQReg0BjZiW6yGffnlr/NJu4=" crossorigin="anonymous"></script>
 	<script src="/js/jquery.js"></script>
 	<script src="/js/bootstrap.min.js"></script>
 	<script src="/js/jquery.scrollUp.min.js"></script>
@@ -152,6 +161,14 @@
 	<script src="/js/jquery.prettyPhoto.js"></script>
 	<script src="/js/main.js"></script>
 	<script src="/backend/js/confirm.js"></script>
+	<script>
+		$(function () {
+			var message = '@TempData["success"]';
+			if(message != ''){
+				Swal.fire(message);
+			}
+		});
+	</script>
 	@await RenderSectionAsync("Scripts", required:false)
 </body>
 </html>

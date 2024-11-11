@@ -2,26 +2,78 @@
 
 @{
     ViewData["title"] = "Order Details List";
+    decimal total = 0;
+    decimal subTotal = 0;
 }
 
 <h4>List-Order</h4>
 <table class="table">
     <thead>
         <tr>
+            <th scope="col">Id</th>
             <th scope="col">Order Code</th>
             <th scope="col">UserName</th>
-            <th scope="col">Order Date</th>
-            <th scope="col">Order Status</th>
+            <th scope="col">Product Name</th>
+            <th scope="col">Product Price</th>
+            <th scope="col">Quantity</th>
+            <th scope="col">Subtotal</th>
         </tr>
     </thead>
     <tbody>
         @foreach (var item in Model)
         {
+            subTotal = item.Quantity * item.Price;
+            total += subTotal;
+
             <tr>
-                <th scope="row">@item.OrderCode</th>
+                <input type="hidden" asp-for="@item.OrderCode" class="getId"/>
+                <td>@item.Id</td>
+                <td>@item.OrderCode</td>
                 <td>@item.UserName</td>
-                
+                <td>@item.Product.Name</td>
+                <td>@item.Price</td>
+                <td>@item.Quantity</td>
+                <td>@subTotal.ToString("C")</td>
             </tr>
         }
+        <tr>
+            <th colspan="6">Total:</th>
+            <td>@total.ToString("C")</td>
+            <td><select class="form-control select-update-order" >
+                <option value="1">Đơn hàng mới</option>
+                <option value="0">Đã xử lý</option>
+            </select>
+            </td>
+        </tr>
     </tbody>
 </table>
+
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            $('.select-update-order').change(function () {
+                var status = $(this).val();
+                var orderCode = $('.getId').val();
+
+                $.ajax({
+                    type: "POST",
+                    url: "@Url.Action("UpdateOrder")",
+                    data: { status: status , orderCode: orderCode },
+                    
+                    success: function(result){
+                        if(result.success){
+                            // console.log("Update successfully");
+                            Swal.fire("Update successfully");
+                        }else{
+                            console.log("Update failed" + result.message);
+                        }
+                    },
+                    error: function (req, status, error) {
+                        console.error("error updating order" + error);
+                    }
+                });
+            });
+
+        });
+    </script>
+}

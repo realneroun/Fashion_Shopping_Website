@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using shoppingcart.Areas.Admin.Repositories;
 using shoppingcart.Models;
 using shoppingcart.Models.ViewModels;
 using shoppingcart.Repositories;
@@ -9,10 +10,12 @@ namespace shoppingcart.Controllers
 {
 	public class CheckoutController : Controller
 	{
+		private readonly IEmailSender _emailSender;
 		private readonly DataContext _dataContext;
-		public CheckoutController(DataContext dataContext)
+		public CheckoutController(DataContext dataContext, IEmailSender emailSender)
 		{
 			_dataContext = dataContext;
+			_emailSender = emailSender;
 		}
 		public async Task<IActionResult> Checkout()
 		{
@@ -42,6 +45,11 @@ namespace shoppingcart.Controllers
 					_dataContext.SaveChanges();
 				}
 				HttpContext.Session.Remove("Cart");
+				//send mail order success
+				var receiver = "haudtps34871@fpt.edu.vn";
+				var subject = "Đặt hàng thành công !!!";
+				var message = "Cảm ơn bạn đã đặt hàng thành công";
+				await _emailSender.SendEmailAsync(receiver, subject, message);
 				TempData["success"] = "Checkout successfully";
 				return RedirectToAction("Index", "Cart");
 			}
